@@ -1,0 +1,42 @@
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    Application,
+    CommandHandler,
+    CallbackQueryHandler,
+    ContextTypes
+)
+
+TOKEN = "8969875124:AAEygp81jNr2_lj4ZqQa_Cn3YVtkTpv4Ki4"
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    teclado = [
+        [InlineKeyboardButton("VIP 7 dias - R$9,90", callback_data="vip7")],
+        [InlineKeyboardButton("VIP 15 dias - R$29,90", callback_data="vip15")],
+        [InlineKeyboardButton("VIP 30 dias + vídeo exclusivo - R$59,90", callback_data="vip30")]
+    ]
+
+    await update.message.reply_text(
+        "🔥 Escolha seu plano VIP:",
+        reply_markup=InlineKeyboardMarkup(teclado)
+    )
+
+async def botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    if query.data == "vip7":
+        await query.message.reply_text("PIX VIP 7 dias: R$9,90")
+
+    elif query.data == "vip15":
+        await query.message.reply_text("PIX VIP 15 dias: R$29,90")
+
+    elif query.data == "vip30":
+        await query.message.reply_text("PIX VIP 30 dias + vídeo exclusivo: R$59,90")
+
+app = Application.builder().token(TOKEN).build()
+
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CallbackQueryHandler(botoes))
+
+print("Bot iniciado...")
+app.run_polling()
